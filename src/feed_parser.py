@@ -165,7 +165,8 @@ async def fetch_all_feeds(feeds: List[Dict[str, str]], batch_size: int = 10, tim
         timeout: Timeout per feed in seconds
 
     Returns:
-        List of feed result dicts
+        List of feed result dicts. Length matches input feeds list,
+        with error results for feeds that fail.
     """
     results = []
 
@@ -178,9 +179,16 @@ async def fetch_all_feeds(feeds: List[Dict[str, str]], batch_size: int = 10, tim
         batch_results = await asyncio.gather(*tasks, return_exceptions=True)
 
         # Filter out exceptions and add to results
-        for result in batch_results:
+        for i, result in enumerate(batch_results):
             if isinstance(result, Exception):
-                logger.error(f"Unexpected error: {result}")
+                feed = batch[i]
+                logger.error(f"{feed['title']}: Unexpected error - {result}")
+                results.append({
+                    "name": feed["title"],
+                    "status": "error",
+                    "posts": [],
+                    "error_message": f"Unexpected error: {str(result)}"
+                })
             else:
                 results.append(result)
 
