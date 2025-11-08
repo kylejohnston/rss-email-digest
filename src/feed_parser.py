@@ -4,6 +4,14 @@ from pathlib import Path
 from typing import List, Dict, Union
 from datetime import datetime, timedelta, timezone
 import time
+import aiohttp
+import feedparser
+import asyncio
+import logging
+
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 def parse_opml(opml_path: Path) -> List[Dict[str, str]]:
@@ -63,3 +71,85 @@ def is_from_yesterday(date_value: Union[datetime, time.struct_time, None]) -> bo
 
     # Compare calendar dates only
     return date_value.date() == yesterday
+
+
+async def fetch_feed(feed_name: str, feed_url: str, timeout: int = 15) -> Dict:
+    """
+    Fetch RSS feed and extract yesterday's posts.
+
+    Args:
+        feed_name: Display name for the feed
+        feed_url: RSS feed URL
+        timeout: Request timeout in seconds
+
+    Returns:
+        Dict with keys: name, status, posts, error_message (if error)
+    """
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(feed_url, timeout=aiohttp.ClientTimeout(total=timeout)) as response:
+                content = await response.text()
+
+        # Parse feed content
+        feed = feedparser.parse(content)
+
+        if feed.bozo:  # feedparser sets bozo=1 for malformed feeds
+            return {
+                "name": feed_name,
+                "status": "error",
+                "posts": [],
+                "error_message": f"Invalid feed format: {feed.bozo_exception}"
+            }
+
+        # Filter for yesterday's posts
+        yesterday_posts = []
+        for entry in feed.entries:
+            # Try published date first, fall back to updated
+            pub_date = getattr(entry, "published_parsed", None) or getattr(entry, "updated_parsed", None)
+
+            if pub_date and is_from_yesterday(pub_date):
+                # Extract excerpt from summary or content
+                excerpt = ""
+                if hasattr(entry, "summary"):
+                    excerpt = entry.summary
+                elif hasattr(entry, "content"):
+                    excerpt = entry.content[0].value
+
+                # Strip HTML tags and truncate
+                import re
+                excerpt = re.sub(r'<[^>]+>', '', excerpt)
+                excerpt = excerpt.strip()
+                if len(excerpt) > 300:
+                    excerpt = excerpt[:300] + "..."
+
+                yesterday_posts.append({
+                    "title": entry.title,
+                    "link": entry.link,
+                    "excerpt": excerpt
+                })
+
+        status = "success" if yesterday_posts else "no_updates"
+        logger.info(f"{feed_name}: {len(yesterday_posts)} posts from yesterday")
+
+        return {
+            "name": feed_name,
+            "status": status,
+            "posts": yesterday_posts
+        }
+
+    except asyncio.TimeoutError:
+        logger.warning(f"{feed_name}: Timeout after {timeout}s")
+        return {
+            "name": feed_name,
+            "status": "error",
+            "posts": [],
+            "error_message": f"Timeout after {timeout}s"
+        }
+    except Exception as e:
+        logger.error(f"{feed_name}: Error - {str(e)}")
+        return {
+            "name": feed_name,
+            "status": "error",
+            "posts": [],
+            "error_message": str(e)
+        }

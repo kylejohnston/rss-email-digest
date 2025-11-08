@@ -1,7 +1,8 @@
 import pytest
 from pathlib import Path
 from datetime import datetime, timedelta, timezone
-from src.feed_parser import parse_opml, is_from_yesterday
+import asyncio
+from src.feed_parser import parse_opml, is_from_yesterday, fetch_feed
 
 
 def test_parse_opml_returns_feed_list():
@@ -51,3 +52,34 @@ def test_is_from_yesterday_with_old_date():
 def test_is_from_yesterday_with_none():
     """Test that is_from_yesterday returns False for None."""
     assert is_from_yesterday(None) is False
+
+
+@pytest.mark.asyncio
+async def test_fetch_feed_success():
+    """Test successful feed fetch returns posts from yesterday."""
+    feed_url = "https://daringfireball.net/feeds/main"
+
+    result = await fetch_feed("Daring Fireball", feed_url, timeout=15)
+
+    assert result["name"] == "Daring Fireball"
+    assert result["status"] in ["success", "no_updates"]
+    assert isinstance(result["posts"], list)
+    # Posts should be empty or contain valid post dicts
+    for post in result["posts"]:
+        assert "title" in post
+        assert "link" in post
+        assert "excerpt" in post
+
+
+@pytest.mark.asyncio
+async def test_fetch_feed_timeout():
+    """Test that fetch_feed handles timeout gracefully."""
+    # Use a URL that will timeout (non-routable IP)
+    feed_url = "http://10.255.255.1/feed.xml"
+
+    result = await fetch_feed("Timeout Feed", feed_url, timeout=1)
+
+    assert result["name"] == "Timeout Feed"
+    assert result["status"] == "error"
+    assert result["posts"] == []
+    assert "timeout" in result["error_message"].lower()
