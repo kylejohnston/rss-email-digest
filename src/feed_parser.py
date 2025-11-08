@@ -1,4 +1,5 @@
 """RSS feed parser module."""
+import re
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import List, Dict, Union
@@ -116,7 +117,6 @@ async def fetch_feed(feed_name: str, feed_url: str, timeout: int = 15) -> Dict:
                     excerpt = entry.content[0].value
 
                 # Strip HTML tags and truncate
-                import re
                 excerpt = re.sub(r'<[^>]+>', '', excerpt)
                 excerpt = excerpt.strip()
                 if len(excerpt) > 300:
