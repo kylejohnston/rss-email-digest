@@ -153,3 +153,36 @@ async def fetch_feed(feed_name: str, feed_url: str, timeout: int = 15) -> Dict:
             "posts": [],
             "error_message": str(e)
         }
+
+
+async def fetch_all_feeds(feeds: List[Dict[str, str]], batch_size: int = 10, timeout: int = 15) -> List[Dict]:
+    """
+    Fetch multiple RSS feeds in parallel batches.
+
+    Args:
+        feeds: List of feed dicts with 'title' and 'url' keys
+        batch_size: Number of feeds to fetch concurrently
+        timeout: Timeout per feed in seconds
+
+    Returns:
+        List of feed result dicts
+    """
+    results = []
+
+    logger.info(f"Fetching {len(feeds)} feeds in batches of {batch_size}...")
+
+    # Process feeds in batches to avoid overwhelming the system
+    for i in range(0, len(feeds), batch_size):
+        batch = feeds[i:i + batch_size]
+        tasks = [fetch_feed(feed["title"], feed["url"], timeout) for feed in batch]
+        batch_results = await asyncio.gather(*tasks, return_exceptions=True)
+
+        # Filter out exceptions and add to results
+        for result in batch_results:
+            if isinstance(result, Exception):
+                logger.error(f"Unexpected error: {result}")
+            else:
+                results.append(result)
+
+    logger.info(f"Completed fetching {len(results)} feeds")
+    return results

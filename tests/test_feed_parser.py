@@ -2,7 +2,7 @@ import pytest
 from pathlib import Path
 from datetime import datetime, timedelta, timezone
 import asyncio
-from src.feed_parser import parse_opml, is_from_yesterday, fetch_feed
+from src.feed_parser import parse_opml, is_from_yesterday, fetch_feed, fetch_all_feeds
 
 
 def test_parse_opml_returns_feed_list():
@@ -83,3 +83,34 @@ async def test_fetch_feed_timeout():
     assert result["status"] == "error"
     assert result["posts"] == []
     assert "timeout" in result["error_message"].lower()
+
+
+@pytest.mark.asyncio
+async def test_fetch_all_feeds():
+    """Test parallel fetching of multiple feeds."""
+    feeds = [
+        {"title": "Daring Fireball", "url": "https://daringfireball.net/feeds/main"},
+        {"title": "Hacker News", "url": "https://news.ycombinator.com/rss"}
+    ]
+
+    results = await fetch_all_feeds(feeds, batch_size=10)
+
+    assert len(results) == 2
+    assert all(r["status"] in ["success", "no_updates", "error"] for r in results)
+    assert all("name" in r and "posts" in r for r in results)
+
+
+@pytest.mark.asyncio
+async def test_fetch_all_feeds_with_failures():
+    """Test that fetch_all_feeds continues despite individual failures."""
+    feeds = [
+        {"title": "Valid Feed", "url": "https://daringfireball.net/feeds/main"},
+        {"title": "Invalid Feed", "url": "http://10.255.255.1/feed.xml"}
+    ]
+
+    results = await fetch_all_feeds(feeds, batch_size=10, timeout=2)
+
+    assert len(results) == 2
+    # At least one should succeed, at least one should error
+    statuses = [r["status"] for r in results]
+    assert "error" in statuses
