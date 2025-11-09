@@ -2,6 +2,8 @@
 from datetime import datetime, timedelta, timezone
 from typing import List, Dict
 import html
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 
 def generate_plain_text(feed_results: List[Dict]) -> str:
@@ -136,3 +138,35 @@ def generate_html(feed_results: List[Dict]) -> str:
     parts.append("</html>")
 
     return "\n".join(parts)
+
+
+def create_email_message(feed_results: List[Dict], from_email: str, to_email: str) -> MIMEMultipart:
+    """
+    Create multipart email message with plain text and HTML.
+
+    Args:
+        feed_results: List of feed result dicts
+        from_email: Sender email address
+        to_email: Recipient email address
+
+    Returns:
+        MIMEMultipart email message
+    """
+    yesterday = datetime.now(timezone.utc) - timedelta(days=1)
+    date_str = yesterday.strftime("%B %d, %Y")
+
+    # Create message
+    msg = MIMEMultipart("alternative")
+    msg["Subject"] = f"RSS Digest - {date_str}"
+    msg["From"] = from_email
+    msg["To"] = to_email
+
+    # Generate both versions
+    plain_text = generate_plain_text(feed_results)
+    html_text = generate_html(feed_results)
+
+    # Attach parts (plain text first, HTML second per RFC 2046)
+    msg.attach(MIMEText(plain_text, "plain"))
+    msg.attach(MIMEText(html_text, "html"))
+
+    return msg

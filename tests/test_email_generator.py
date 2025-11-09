@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta, timezone
-from src.email_generator import generate_plain_text, generate_html
+import os
+from src.email_generator import generate_plain_text, generate_html, create_email_message
 
 
 def test_generate_plain_text_with_posts():
@@ -109,3 +110,37 @@ def test_generate_html_escapes_special_chars():
     assert "&lt;" in html or "&#x3C;" in html  # < escaped
     assert "&gt;" in html or "&#x3E;" in html  # > escaped
     assert "<script>" not in html  # Script tags escaped
+
+
+def test_create_email_message():
+    """Test multipart email message creation."""
+    feed_results = [
+        {
+            "name": "Test Feed",
+            "status": "success",
+            "posts": [
+                {
+                    "title": "Test Post",
+                    "link": "https://example.com/test",
+                    "excerpt": "Test excerpt"
+                }
+            ]
+        }
+    ]
+
+    msg = create_email_message(
+        feed_results=feed_results,
+        from_email="sender@example.com",
+        to_email="recipient@example.com"
+    )
+
+    assert msg["Subject"].startswith("RSS Digest - ")
+    assert msg["From"] == "sender@example.com"
+    assert msg["To"] == "recipient@example.com"
+    assert msg.is_multipart()
+
+    # Check both parts exist
+    parts = list(msg.walk())
+    content_types = [part.get_content_type() for part in parts]
+    assert "text/plain" in content_types
+    assert "text/html" in content_types
