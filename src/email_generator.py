@@ -195,18 +195,19 @@ def send_email(
         smtp_password: SMTP password
 
     Raises:
-        Exception: If email sending fails
+        smtplib.SMTPException: If SMTP authentication or sending fails
+        OSError: If network connection to SMTP server fails
     """
     logger.info(f"Connecting to SMTP server {smtp_host}:{smtp_port}...")
 
     try:
-        with smtplib.SMTP(smtp_host, smtp_port) as server:
+        with smtplib.SMTP(smtp_host, smtp_port, timeout=30) as server:
             server.starttls()
             server.login(smtp_user, smtp_password)
             server.send_message(msg)
 
         logger.info(f"Email sent successfully to {msg['To']}")
 
-    except Exception as e:
+    except (smtplib.SMTPException, OSError) as e:
         logger.error(f"Failed to send email: {str(e)}")
         raise
