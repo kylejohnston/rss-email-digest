@@ -28,44 +28,52 @@ async def main():
 
     # Get configuration from environment
     smtp_host = os.getenv("SMTP_HOST")
-    smtp_port = int(os.getenv("SMTP_PORT"))
+    try:
+        smtp_port = int(os.getenv("SMTP_PORT"))
+    except (ValueError, TypeError):
+        logger.error(f"SMTP_PORT must be a valid integer, got: {os.getenv('SMTP_PORT')}")
+        sys.exit(1)
     smtp_user = os.getenv("SMTP_USER")
     smtp_password = os.getenv("SMTP_PASSWORD")
     recipient_email = os.getenv("RECIPIENT_EMAIL")
 
-    # Parse OPML file
-    opml_path = Path(__file__).parent.parent / "feeds.opml"
+    try:
+        # Parse OPML file
+        opml_path = Path(__file__).parent.parent / "feeds.opml"
 
-    if not opml_path.exists():
-        logger.error(f"OPML file not found: {opml_path}")
-        logger.info("Create a feeds.opml file in the repository root with your RSS feeds")
+        if not opml_path.exists():
+            logger.error(f"OPML file not found: {opml_path}")
+            logger.info("Create a feeds.opml file in the repository root with your RSS feeds")
+            sys.exit(1)
+
+        logger.info(f"Parsing OPML file: {opml_path}")
+        feeds = parse_opml(opml_path)
+        logger.info(f"Found {len(feeds)} feeds")
+
+        # Fetch all feeds
+        feed_results = await fetch_all_feeds(feeds, batch_size=10, timeout=15)
+
+        # Create and send email
+        logger.info("Generating email...")
+        msg = create_email_message(
+            feed_results=feed_results,
+            from_email=smtp_user,
+            to_email=recipient_email
+        )
+
+        logger.info("Sending email...")
+        send_email(
+            msg=msg,
+            smtp_host=smtp_host,
+            smtp_port=smtp_port,
+            smtp_user=smtp_user,
+            smtp_password=smtp_password
+        )
+
+        logger.info("RSS digest sent successfully!")
+    except Exception as e:
+        logger.error(f"Fatal error: {str(e)}")
         sys.exit(1)
-
-    logger.info(f"Parsing OPML file: {opml_path}")
-    feeds = parse_opml(opml_path)
-    logger.info(f"Found {len(feeds)} feeds")
-
-    # Fetch all feeds
-    feed_results = await fetch_all_feeds(feeds, batch_size=10, timeout=15)
-
-    # Create and send email
-    logger.info("Generating email...")
-    msg = create_email_message(
-        feed_results=feed_results,
-        from_email=smtp_user,
-        to_email=recipient_email
-    )
-
-    logger.info("Sending email...")
-    send_email(
-        msg=msg,
-        smtp_host=smtp_host,
-        smtp_port=smtp_port,
-        smtp_user=smtp_user,
-        smtp_password=smtp_password
-    )
-
-    logger.info("RSS digest sent successfully!")
 
 
 if __name__ == "__main__":
