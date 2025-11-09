@@ -4,6 +4,11 @@ from typing import List, Dict
 import html
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+import smtplib
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 
 def generate_plain_text(feed_results: List[Dict]) -> str:
@@ -170,3 +175,38 @@ def create_email_message(feed_results: List[Dict], from_email: str, to_email: st
     msg.attach(MIMEText(html_text, "html"))
 
     return msg
+
+
+def send_email(
+    msg: MIMEMultipart,
+    smtp_host: str,
+    smtp_port: int,
+    smtp_user: str,
+    smtp_password: str
+) -> None:
+    """
+    Send email via SMTP.
+
+    Args:
+        msg: Email message to send
+        smtp_host: SMTP server hostname
+        smtp_port: SMTP server port
+        smtp_user: SMTP username
+        smtp_password: SMTP password
+
+    Raises:
+        Exception: If email sending fails
+    """
+    logger.info(f"Connecting to SMTP server {smtp_host}:{smtp_port}...")
+
+    try:
+        with smtplib.SMTP(smtp_host, smtp_port) as server:
+            server.starttls()
+            server.login(smtp_user, smtp_password)
+            server.send_message(msg)
+
+        logger.info(f"Email sent successfully to {msg['To']}")
+
+    except Exception as e:
+        logger.error(f"Failed to send email: {str(e)}")
+        raise
