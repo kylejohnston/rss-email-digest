@@ -1,0 +1,32 @@
+name: Daily RSS Digest
+
+on:
+  schedule:
+    # Run at 2pm UTC (8am Central, 7am during DST)
+    - cron: '0 14 * * *'
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  send-digest:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r src/requirements.txt
+
+      - name: Run RSS digest
+        env:
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          RECIPIENT_EMAIL: ${{ secrets.RECIPIENT_EMAIL }}
+        run: python src/main.py
