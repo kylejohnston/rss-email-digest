@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta, timezone
-from src.email_generator import generate_plain_text
+from src.email_generator import generate_plain_text, generate_html
 
 
 def test_generate_plain_text_with_posts():
@@ -60,3 +60,52 @@ def test_generate_plain_text_empty():
     plain_text = generate_plain_text(feed_results)
 
     assert "No updates yesterday" in plain_text
+
+
+def test_generate_html_with_posts():
+    """Test HTML email generation with feed updates."""
+    feed_results = [
+        {
+            "name": "Tech Blog",
+            "status": "success",
+            "posts": [
+                {
+                    "title": "New Python Release",
+                    "link": "https://example.com/python",
+                    "excerpt": "Python 3.12 released..."
+                }
+            ]
+        }
+    ]
+
+    html = generate_html(feed_results)
+
+    assert "<html>" in html
+    assert "RSS Digest for" in html
+    assert "<h2>Tech Blog</h2>" in html
+    assert '<a href="https://example.com/python">New Python Release</a>' in html
+    assert "Python 3.12 released..." in html
+
+
+def test_generate_html_escapes_special_chars():
+    """Test that HTML generator escapes special characters."""
+    feed_results = [
+        {
+            "name": "Blog & News",
+            "status": "success",
+            "posts": [
+                {
+                    "title": "Post with <tags> & \"quotes\"",
+                    "link": "https://example.com/test",
+                    "excerpt": "Text with <script>alert('xss')</script>"
+                }
+            ]
+        }
+    ]
+
+    html = generate_html(feed_results)
+
+    assert "&amp;" in html  # & escaped
+    assert "&lt;" in html or "&#x3C;" in html  # < escaped
+    assert "&gt;" in html or "&#x3E;" in html  # > escaped
+    assert "<script>" not in html  # Script tags escaped
