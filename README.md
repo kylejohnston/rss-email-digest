@@ -16,7 +16,7 @@ Automated daily email digest of RSS feed updates, powered by GitHub Actions.
 ### 1. Fork or Clone this Repository
 
 ```bash
-git clone https://github.com/yourusername/rss-digest.git
+git clone https://github.com/yourusername/rss-email-digest.git
 cd rss-digest
 ```
 
