@@ -64,7 +64,6 @@
 <outline type="rss" xmlUrl="https://www.robinsloan.com/lab.xml" title="Dragoncatcher the blog" text="Dragoncatcher the blog" htmlUrl="https://www.robinsloan.com"/>
 <outline type="rss" xmlUrl="https://notetoself.studio/index.xml" title="Note to Self" text="Note to Self" htmlUrl="https://notetoself.studio"/>
 <outline type="rss" xmlUrl="https://veen.com/jeff/rss-source.xml" title="Jeffrey Veen" text="Jeffrey Veen" htmlUrl="https://veen.com/jeff/"/>
-<outline title="newsletters" text="newsletters">
 <outline type="rss" xmlUrl="https://www.platformer.news/feed/" title="Platformer · Casey Newton" text="Platformer · Casey Newton" htmlUrl="https://www.platformer.news/"/>
 <outline type="rss" xmlUrl="https://www.proofofconcept.pub/feed" title="Proof of Concept" text="Proof of Concept" htmlUrl="https://www.proofofconcept.pub"/>
 <outline type="rss" xmlUrl="https://newsletter.danhon.com/rss/" title="Dan Hon" text="Dan Hon" htmlUrl="https://newsletter.danhon.com"/>
@@ -77,7 +76,7 @@
 <outline type="rss" xmlUrl="https://buttondown.com/ownyourweb/rss" title="Own Your Web" text="Own Your Web" htmlUrl="https://newsletter.ownyourweb.site/"/>
 <outline type="rss" xmlUrl="https://www.fivethingsonfriday.com/rss" title="Five things on Friday" text="Five things on Friday" htmlUrl="https://www.fivethingsonfriday.com"/>
 <outline type="rss" xmlUrl="https://newsletter.baselinedesign.io/feed/" title="Baseline Design" text="Baseline Design" htmlUrl="https://newsletter.baselinedesign.com/"/>
-<outline type="rss" xmlUrl="https://newsletter.brxnd.ai/feed/" title="BRXND Dispatch" text="BRXND Dispatch" htmlUrl="https://newsletter.brxnd.ai"/></outline>
+<outline type="rss" xmlUrl="https://newsletter.brxnd.ai/feed/" title="BRXND Dispatch" text="BRXND Dispatch" htmlUrl="https://newsletter.brxnd.ai"/>
 <outline type="rss" xmlUrl="https://nazhamid.com/feed.xml" title="Naz Hamid" text="Naz Hamid" htmlUrl="https://nazhamid.com"/>
 <outline type="rss" xmlUrl="https://arun.is/rss.xml" title="arun.is" text="arun.is" htmlUrl="https://arun.is/"/>
 <outline type="rss" xmlUrl="http://interconnected.org/home/;atom" title="Interconnected" text="Interconnected" htmlUrl="https://interconnected.org/home"/>
@@ -89,7 +88,7 @@
 <outline type="rss" xmlUrl="https://blog.fsck.com/feed/feed.xml" title="Massively Parallel Procrastination" text="Massively Parallel Procrastination" htmlUrl="https://blog.fsck.com"/>
 <outline type="rss" xmlUrl="https://chrisglass.com/links/feed/" title="Chris Glass' bookmarks" text="Chris Glass' bookmarks" htmlUrl="https://chrisglass.com"/>
 <outline type="rss" xmlUrl="https://scottboms.com/documenting/feed" title="Scott Boms: Documenting" text="Scott Boms: Documenting" htmlUrl="https://scottboms.com"/>
-<outline type="rss" xmlUrl="http://feeds.feedburner.com/yewknee" title="yewknee" text="yewknee" htmlUrl="http://yewknee.com/"/></outline>
+<outline type="rss" xmlUrl="http://feeds.feedburner.com/yewknee" title="yewknee" text="yewknee" htmlUrl="http://yewknee.com/"/>
 <outline type="rss" xmlUrl="https://staticmade.com/feed/" title="Static Made by Jeffrey Inscho" text="Static Made by Jeffrey Inscho" htmlUrl="https://staticmade.com/"/>
 <outline type="rss" xmlUrl="https://livelaugh.blog/rss.xml" title="Live Laugh Blog" text="Live Laugh Blog" htmlUrl="https://livelaugh.blog"/>
 <outline type="rss" xmlUrl="https://www.leahreich.com/blog/feed/" title="Leah Reich | Meets Most" text="Leah Reich | Meets Most" htmlUrl="https://www.leahreich.com/"/>
