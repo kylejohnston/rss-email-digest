@@ -9,6 +9,9 @@ venv/
 ENV/
 .env
 
+# Claude
+.claude/
+
 # IDE
 .vscode/
 .idea/
