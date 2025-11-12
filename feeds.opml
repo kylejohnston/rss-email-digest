@@ -2,7 +2,6 @@
 <opml version="2.0">
 <head><title>Reeder</title></head>
 <body>
-<outline type="rss" xmlUrl="https://veen.com/jeff/rss-source.xml" title="Jeffrey Veen" text="Jeffrey Veen" htmlUrl="https://veen.com/"/>
 <outline type="rss" xmlUrl="https://www.robinrendle.com/feed.xml" title="Robin Rendle" text="Robin Rendle" htmlUrl="https://www.robinrendle.com"/>
 <outline type="rss" xmlUrl="http://feeds.feedburner.com/collabfund" title="Collaborative Fund" text="Collaborative Fund" htmlUrl="https://collabfund.com"/>
 <outline type="rss" xmlUrl="http://daverupert.com/atom.xml" title="daverupert.com" text="daverupert.com" htmlUrl="https://daverupert.com"/>
