@@ -42,11 +42,17 @@ def generate_plain_text(feed_results: List[Dict]) -> str:
 
         for feed in feeds_with_posts:
             lines.append(feed["name"])
+            # Add site URL if available
+            if feed.get("site_url"):
+                lines.append(f"Visit: {feed['site_url']}")
             for post in feed["posts"]:
-                lines.append(f"• {post['title']}")
+                # Decode HTML entities in plain text
+                title = html.unescape(post['title'])
+                lines.append(f"• {title}")
                 lines.append(f"  {post['link']}")
                 if post["excerpt"]:
-                    lines.append(f"  {post['excerpt']}")
+                    excerpt = html.unescape(post['excerpt'])
+                    lines.append(f"  {excerpt}")
                 lines.append("")
             lines.append("")
     else:
@@ -111,12 +117,19 @@ def generate_html(feed_results: List[Dict]) -> str:
         parts.append("<h2>Feeds with Updates</h2>")
 
         for feed in feeds_with_posts:
-            parts.append(f"<h2>{html.escape(feed['name'])}</h2>")
+            # Make feed title clickable if site URL is available
+            if feed.get("site_url"):
+                parts.append(f'<h2><a href="{html.escape(feed["site_url"])}">{html.escape(feed["name"])}</a></h2>')
+            else:
+                parts.append(f"<h2>{html.escape(feed['name'])}</h2>")
             for post in feed["posts"]:
                 parts.append('<div class="post">')
-                parts.append(f'<a href="{html.escape(post["link"])}">{html.escape(post["title"])}</a>')
+                # Unescape HTML entities in content while keeping XSS protection
+                title = html.unescape(post["title"])
+                parts.append(f'<a href="{html.escape(post["link"])}">{html.escape(title)}</a>')
                 if post["excerpt"]:
-                    parts.append(f'<div class="excerpt">{html.escape(post["excerpt"])}</div>')
+                    excerpt = html.unescape(post["excerpt"])
+                    parts.append(f'<div class="excerpt">{html.escape(excerpt)}</div>')
                 parts.append("</div>")
     else:
         parts.append("<p>No updates yesterday</p>")

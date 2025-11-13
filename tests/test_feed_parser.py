@@ -64,6 +64,7 @@ async def test_fetch_feed_success():
     assert result["name"] == "Daring Fireball"
     assert result["status"] in ["success", "no_updates"]
     assert isinstance(result["posts"], list)
+    assert "site_url" in result
     # Posts should be empty or contain valid post dicts
     for post in result["posts"]:
         assert "title" in post
@@ -82,6 +83,8 @@ async def test_fetch_feed_timeout():
     assert result["name"] == "Timeout Feed"
     assert result["status"] == "error"
     assert result["posts"] == []
+    assert "site_url" in result
+    assert result["site_url"] == ""  # Empty for error cases
     assert "timeout" in result["error_message"].lower()
 
 
@@ -97,7 +100,7 @@ async def test_fetch_all_feeds():
 
     assert len(results) == 2
     assert all(r["status"] in ["success", "no_updates", "error"] for r in results)
-    assert all("name" in r and "posts" in r for r in results)
+    assert all("name" in r and "posts" in r and "site_url" in r for r in results)
 
 
 @pytest.mark.asyncio

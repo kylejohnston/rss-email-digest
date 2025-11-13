@@ -99,8 +99,12 @@ async def fetch_feed(feed_name: str, feed_url: str, timeout: int = 15) -> Dict:
                 "name": feed_name,
                 "status": "error",
                 "posts": [],
-                "error_message": f"Invalid feed format: {feed.bozo_exception}"
+                "error_message": f"Invalid feed format: {feed.bozo_exception}",
+                "site_url": ""
             }
+
+        # Extract site URL from feed metadata
+        site_url = feed.feed.get("link", "") if hasattr(feed, "feed") else ""
 
         # Filter for yesterday's posts
         yesterday_posts = []
@@ -134,7 +138,8 @@ async def fetch_feed(feed_name: str, feed_url: str, timeout: int = 15) -> Dict:
         return {
             "name": feed_name,
             "status": status,
-            "posts": yesterday_posts
+            "posts": yesterday_posts,
+            "site_url": site_url
         }
 
     except asyncio.TimeoutError:
@@ -143,7 +148,8 @@ async def fetch_feed(feed_name: str, feed_url: str, timeout: int = 15) -> Dict:
             "name": feed_name,
             "status": "error",
             "posts": [],
-            "error_message": f"Timeout after {timeout}s"
+            "error_message": f"Timeout after {timeout}s",
+            "site_url": ""
         }
     except Exception as e:
         logger.error(f"{feed_name}: Error - {str(e)}")
@@ -151,7 +157,8 @@ async def fetch_feed(feed_name: str, feed_url: str, timeout: int = 15) -> Dict:
             "name": feed_name,
             "status": "error",
             "posts": [],
-            "error_message": str(e)
+            "error_message": str(e),
+            "site_url": ""
         }
 
 
@@ -187,7 +194,8 @@ async def fetch_all_feeds(feeds: List[Dict[str, str]], batch_size: int = 10, tim
                     "name": feed["title"],
                     "status": "error",
                     "posts": [],
-                    "error_message": f"Unexpected error: {str(result)}"
+                    "error_message": f"Unexpected error: {str(result)}",
+                    "site_url": ""
                 })
             else:
                 results.append(result)
