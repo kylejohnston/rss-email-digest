@@ -7,6 +7,9 @@ Automated daily email digest of RSS feed updates, powered by GitHub Actions.
 - Fetches 100-200 RSS feeds in parallel
 - Filters for posts published yesterday
 - Sends formatted HTML + plain text email
+- **HTML entity decoding** - Special characters (curly quotes, em dashes, etc.) render correctly
+- **Clickable feed titles** - Feed names link to the main site in HTML emails
+- **CLI testing tool** - Debug individual feeds locally without sending emails
 - Runs automatically every day at 2pm UTC (8am Central, 7am during DST)
 - Graceful error handling for failed feeds
 - Zero infrastructure required (runs on GitHub Actions)
@@ -59,6 +62,8 @@ Check the logs to verify it works correctly.
 
 ## Local Testing
 
+### Running the Full Digest
+
 ```bash
 # Install dependencies
 pip install -r src/requirements.txt
@@ -73,6 +78,33 @@ export RECIPIENT_EMAIL=recipient@email.com
 # Run the script
 python src/main.py
 ```
+
+### Testing Individual Feeds
+
+Use the CLI testing tool to debug individual feeds without sending emails:
+
+```bash
+# Show latest posts regardless of date
+python -m src.test_feed "https://example.com/feed.xml" --latest
+
+# Test for a specific date (useful for debugging date filters)
+python -m src.test_feed "https://example.com/feed.xml" --date 2025-11-11
+
+# Test with default filter (yesterday's posts only)
+python -m src.test_feed "https://example.com/feed.xml"
+```
+
+**What it shows:**
+- Feed metadata (title, homepage URL)
+- Latest 10 posts with publication dates
+- Whether each post matches the date filter (✓ or ✗)
+- Excerpt previews
+
+**Use cases:**
+- Debug why a feed isn't showing up in your digest
+- Verify a feed has recent posts
+- Check if date filtering is working correctly
+- Test new feeds before adding them to `feeds.opml`
 
 ## Schedule
 

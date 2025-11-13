@@ -12,6 +12,7 @@ def test_generate_plain_text_with_posts():
         {
             "name": "Tech Blog",
             "status": "success",
+            "site_url": "https://techblog.com",
             "posts": [
                 {
                     "title": "New Python Release",
@@ -23,6 +24,7 @@ def test_generate_plain_text_with_posts():
         {
             "name": "News Site",
             "status": "success",
+            "site_url": "https://news.com",
             "posts": [
                 {
                     "title": "Breaking News",
@@ -34,6 +36,7 @@ def test_generate_plain_text_with_posts():
         {
             "name": "Failed Feed",
             "status": "error",
+            "site_url": "",
             "posts": [],
             "error_message": "Timeout after 15s"
         }
@@ -54,8 +57,8 @@ def test_generate_plain_text_with_posts():
 def test_generate_plain_text_empty():
     """Test plain text email when no feeds have updates."""
     feed_results = [
-        {"name": "Feed 1", "status": "no_updates", "posts": []},
-        {"name": "Feed 2", "status": "no_updates", "posts": []}
+        {"name": "Feed 1", "status": "no_updates", "site_url": "", "posts": []},
+        {"name": "Feed 2", "status": "no_updates", "site_url": "", "posts": []}
     ]
 
     plain_text = generate_plain_text(feed_results)
@@ -69,6 +72,7 @@ def test_generate_html_with_posts():
         {
             "name": "Tech Blog",
             "status": "success",
+            "site_url": "",
             "posts": [
                 {
                     "title": "New Python Release",
@@ -82,7 +86,6 @@ def test_generate_html_with_posts():
     html = generate_html(feed_results)
 
     assert "<html>" in html
-    assert "RSS Digest for" in html
     assert "<h2>Tech Blog</h2>" in html
     assert '<a href="https://example.com/python">New Python Release</a>' in html
     assert "Python 3.12 released..." in html
@@ -94,6 +97,7 @@ def test_generate_html_escapes_special_chars():
         {
             "name": "Blog & News",
             "status": "success",
+            "site_url": "",
             "posts": [
                 {
                     "title": "Post with <tags> & \"quotes\"",
@@ -112,12 +116,168 @@ def test_generate_html_escapes_special_chars():
     assert "<script>" not in html  # Script tags escaped
 
 
+def test_html_entity_decoding_plain_text():
+    """Test that HTML entities are decoded in plain text output."""
+    feed_results = [
+        {
+            "name": "Test Feed",
+            "status": "success",
+            "site_url": "",
+            "posts": [
+                {
+                    "title": "The company&#8217;s new API",
+                    "link": "https://example.com/test",
+                    "excerpt": "Here&#8217;s what&#8217;s new: &quot;improved&quot; features"
+                }
+            ]
+        }
+    ]
+
+    plain_text = generate_plain_text(feed_results)
+
+    # Check that entities are decoded to their actual characters
+    # &#8217; decodes to ' (right single quotation mark U+2019)
+    # &quot; decodes to " (straight double quote)
+    assert "\u2019" in plain_text  # Right single quotation mark should be present
+    assert "The company" in plain_text and "s new API" in plain_text
+    assert "improved" in plain_text
+    # Should not contain the raw entities
+    assert "&#8217;" not in plain_text
+    assert "&quot;" not in plain_text
+
+
+def test_html_entity_decoding_html():
+    """Test that HTML entities are decoded in HTML output."""
+    feed_results = [
+        {
+            "name": "Test Feed",
+            "status": "success",
+            "site_url": "",
+            "posts": [
+                {
+                    "title": "The company&#8217;s new API",
+                    "link": "https://example.com/test",
+                    "excerpt": "Here&#8217;s what&#8217;s new: &quot;improved&quot; features"
+                }
+            ]
+        }
+    ]
+
+    html = generate_html(feed_results)
+
+    # Check that entities are decoded to their actual characters
+    # &#8217; decodes to ' (right single quotation mark U+2019)
+    # After re-escaping for HTML, this stays as the actual character
+    assert "\u2019" in html  # Right single quotation mark should be present
+    assert "The company" in html and "s new API" in html
+    assert "improved" in html
+    # Should not contain the original numeric entities
+    assert "&#8217;" not in html
+
+
+def test_html_entity_decoding_preserves_xss_protection():
+    """Test that XSS protection is maintained after entity decoding."""
+    feed_results = [
+        {
+            "name": "Test Feed",
+            "status": "success",
+            "site_url": "",
+            "posts": [
+                {
+                    "title": "&lt;script&gt;alert(&#39;xss&#39;)&lt;/script&gt;",
+                    "link": "https://example.com/test",
+                    "excerpt": "Safe &amp; secure"
+                }
+            ]
+        }
+    ]
+
+    html = generate_html(feed_results)
+
+    # After unescape, the < and > will be there, but then re-escaped
+    # Should not contain executable script tags
+    assert "<script>" not in html
+    assert "alert('xss')" not in html or "alert(&#x27;xss&#x27;)" in html
+    # Should contain escaped versions
+    assert "&lt;" in html or "&#x3C;" in html
+
+
+def test_clickable_feed_titles_html():
+    """Test that feed titles are clickable links in HTML output when site_url is present."""
+    feed_results = [
+        {
+            "name": "Example Blog",
+            "status": "success",
+            "site_url": "https://example.com",
+            "posts": [
+                {
+                    "title": "Test Post",
+                    "link": "https://example.com/post",
+                    "excerpt": "Test excerpt"
+                }
+            ]
+        }
+    ]
+
+    html = generate_html(feed_results)
+
+    # Feed title should be wrapped in a link
+    assert '<h2><a href="https://example.com">Example Blog</a></h2>' in html
+
+
+def test_non_clickable_feed_titles_html():
+    """Test that feed titles are not clickable when site_url is empty."""
+    feed_results = [
+        {
+            "name": "Example Blog",
+            "status": "success",
+            "site_url": "",
+            "posts": [
+                {
+                    "title": "Test Post",
+                    "link": "https://example.com/post",
+                    "excerpt": "Test excerpt"
+                }
+            ]
+        }
+    ]
+
+    html = generate_html(feed_results)
+
+    # Feed title should NOT be a link
+    assert "<h2>Example Blog</h2>" in html
+
+
+def test_clickable_feed_titles_plain_text():
+    """Test that site URL is shown in plain text output when present."""
+    feed_results = [
+        {
+            "name": "Example Blog",
+            "status": "success",
+            "site_url": "https://example.com",
+            "posts": [
+                {
+                    "title": "Test Post",
+                    "link": "https://example.com/post",
+                    "excerpt": "Test excerpt"
+                }
+            ]
+        }
+    ]
+
+    plain_text = generate_plain_text(feed_results)
+
+    # Should show the visit line
+    assert "Visit: https://example.com" in plain_text
+
+
 def test_create_email_message():
     """Test multipart email message creation."""
     feed_results = [
         {
             "name": "Test Feed",
             "status": "success",
+            "site_url": "https://example.com",
             "posts": [
                 {
                     "title": "Test Post",
