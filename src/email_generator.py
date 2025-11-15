@@ -37,9 +37,6 @@ def generate_plain_text(feed_results: List[Dict]) -> str:
     feeds_failed = [f for f in sorted_feeds if f["status"] == "error"]
 
     if feeds_with_posts:
-        lines.append("--- Feeds with Updates ---")
-        lines.append("")
-
         for feed in feeds_with_posts:
             lines.append(feed["name"])
             # Add site URL if available
@@ -114,8 +111,6 @@ def generate_html(feed_results: List[Dict]) -> str:
     ]
 
     if feeds_with_posts:
-        parts.append("<h2>Feeds with Updates</h2>")
-
         for feed in feeds_with_posts:
             # Make feed title clickable if site URL is available
             if feed.get("site_url"):
