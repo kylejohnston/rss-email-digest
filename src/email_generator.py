@@ -68,6 +68,9 @@ def generate_plain_text(feed_results: List[Dict]) -> str:
         for feed in feeds_failed:
             error_msg = feed.get("error_message", "Unknown error")
             lines.append(f"• {feed['name']} ({error_msg})")
+            # Add site URL if available
+            if feed.get("site_url"):
+                lines.append(f"  Visit: {feed['site_url']}")
 
     return "\n".join(lines)
 
@@ -143,7 +146,12 @@ def generate_html(feed_results: List[Dict]) -> str:
         parts.append("<ul>")
         for feed in feeds_failed:
             error_msg = feed.get("error_message", "Unknown error")
-            parts.append(f"<li>{html.escape(feed['name'])} ({html.escape(error_msg)})</li>")
+            # Make feed name a hyperlink if site URL is available
+            if feed.get("site_url"):
+                feed_name = f'<a href="{html.escape(feed["site_url"])}">{html.escape(feed["name"])}</a>'
+            else:
+                feed_name = html.escape(feed['name'])
+            parts.append(f"<li>{feed_name} ({html.escape(error_msg)})</li>")
         parts.append("</ul>")
 
     parts.append("</div>")
