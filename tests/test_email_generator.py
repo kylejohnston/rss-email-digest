@@ -304,3 +304,79 @@ def test_create_email_message():
     content_types = [part.get_content_type() for part in parts]
     assert "text/plain" in content_types
     assert "text/html" in content_types
+
+
+def test_clickable_error_feed_names_html():
+    """Test that error feed names are clickable links in HTML output when site_url is present."""
+    feed_results = [
+        {
+            "name": "Failed Blog",
+            "status": "error",
+            "site_url": "https://failedblog.com",
+            "posts": [],
+            "error_message": "Timeout after 15s"
+        }
+    ]
+
+    html = generate_html(feed_results)
+
+    # Error feed name should be wrapped in a link
+    assert '<a href="https://failedblog.com">Failed Blog</a>' in html
+    assert "(Timeout after 15s)" in html
+
+
+def test_non_clickable_error_feed_names_html():
+    """Test that error feed names are not clickable when site_url is empty."""
+    feed_results = [
+        {
+            "name": "Failed Blog",
+            "status": "error",
+            "site_url": "",
+            "posts": [],
+            "error_message": "Timeout after 15s"
+        }
+    ]
+
+    html = generate_html(feed_results)
+
+    # Error feed name should NOT be a link
+    assert "Failed Blog (Timeout after 15s)" in html
+    assert '<a href=' not in html or 'Failed Blog</a>' not in html
+
+
+def test_error_feed_site_urls_plain_text():
+    """Test that site URLs are shown for error feeds in plain text output when present."""
+    feed_results = [
+        {
+            "name": "Failed Blog",
+            "status": "error",
+            "site_url": "https://failedblog.com",
+            "posts": [],
+            "error_message": "Timeout after 15s"
+        }
+    ]
+
+    plain_text = generate_plain_text(feed_results)
+
+    # Should show the error and visit line
+    assert "Failed Blog (Timeout after 15s)" in plain_text
+    assert "Visit: https://failedblog.com" in plain_text
+
+
+def test_error_feed_without_site_url_plain_text():
+    """Test that no visit line is shown for error feeds without site_url."""
+    feed_results = [
+        {
+            "name": "Failed Blog",
+            "status": "error",
+            "site_url": "",
+            "posts": [],
+            "error_message": "Timeout after 15s"
+        }
+    ]
+
+    plain_text = generate_plain_text(feed_results)
+
+    # Should show the error but not the visit line
+    assert "Failed Blog (Timeout after 15s)" in plain_text
+    assert "Visit:" not in plain_text
