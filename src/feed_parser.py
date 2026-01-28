@@ -39,7 +39,8 @@ def parse_opml(opml_path: Path) -> List[Dict[str, str]]:
     for outline in root.findall(".//outline[@xmlUrl]"):
         feeds.append({
             "title": outline.get("text") or outline.get("title"),
-            "url": outline.get("xmlUrl")
+            "url": outline.get("xmlUrl"),
+            "html_url": outline.get("htmlUrl", "")
         })
 
     return feeds
@@ -74,7 +75,7 @@ def is_from_yesterday(date_value: Union[datetime, time.struct_time, None]) -> bo
     return date_value.date() == yesterday
 
 
-async def fetch_feed(feed_name: str, feed_url: str, timeout: int = 15) -> Dict:
+async def fetch_feed(feed_name: str, feed_url: str, timeout: int = 15, html_url: str = "") -> Dict:
     """
     Fetch RSS feed and extract yesterday's posts.
 
@@ -82,6 +83,7 @@ async def fetch_feed(feed_name: str, feed_url: str, timeout: int = 15) -> Dict:
         feed_name: Display name for the feed
         feed_url: RSS feed URL
         timeout: Request timeout in seconds
+        html_url: Website URL from OPML (fallback for error cases)
 
     Returns:
         Dict with keys: name, status, posts, error_message (if error)
@@ -100,7 +102,7 @@ async def fetch_feed(feed_name: str, feed_url: str, timeout: int = 15) -> Dict:
                 "status": "error",
                 "posts": [],
                 "error_message": f"Invalid feed format: {feed.bozo_exception}",
-                "site_url": ""
+                "site_url": html_url
             }
 
         # Extract site URL from feed metadata
@@ -149,7 +151,7 @@ async def fetch_feed(feed_name: str, feed_url: str, timeout: int = 15) -> Dict:
             "status": "error",
             "posts": [],
             "error_message": f"Timeout after {timeout}s",
-            "site_url": ""
+            "site_url": html_url
         }
     except Exception as e:
         logger.error(f"{feed_name}: Error - {str(e)}")
@@ -158,7 +160,7 @@ async def fetch_feed(feed_name: str, feed_url: str, timeout: int = 15) -> Dict:
             "status": "error",
             "posts": [],
             "error_message": str(e),
-            "site_url": ""
+            "site_url": html_url
         }
 
 
@@ -182,20 +184,20 @@ async def fetch_all_feeds(feeds: List[Dict[str, str]], batch_size: int = 10, tim
     # Process feeds in batches to avoid overwhelming the system
     for i in range(0, len(feeds), batch_size):
         batch = feeds[i:i + batch_size]
-        tasks = [fetch_feed(feed["title"], feed["url"], timeout) for feed in batch]
+        tasks = [fetch_feed(feed["title"], feed["url"], timeout, feed.get("html_url", "")) for feed in batch]
         batch_results = await asyncio.gather(*tasks, return_exceptions=True)
 
         # Filter out exceptions and add to results
-        for i, result in enumerate(batch_results):
+        for j, result in enumerate(batch_results):
             if isinstance(result, Exception):
-                feed = batch[i]
+                feed = batch[j]
                 logger.error(f"{feed['title']}: Unexpected error - {result}")
                 results.append({
                     "name": feed["title"],
                     "status": "error",
                     "posts": [],
                     "error_message": f"Unexpected error: {str(result)}",
-                    "site_url": ""
+                    "site_url": feed.get("html_url", "")
                 })
             else:
                 results.append(result)
