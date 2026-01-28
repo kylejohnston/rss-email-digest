@@ -14,8 +14,10 @@ def test_parse_opml_returns_feed_list():
     assert len(feeds) == 2
     assert feeds[0]["title"] == "Daring Fireball"
     assert feeds[0]["url"] == "https://daringfireball.net/feeds/main"
+    assert feeds[0]["html_url"] == "https://daringfireball.net/"
     assert feeds[1]["title"] == "Hacker News"
     assert feeds[1]["url"] == "https://news.ycombinator.com/rss"
+    assert feeds[1]["html_url"] == ""  # Missing htmlUrl should default to empty string
 
 
 def test_parse_opml_handles_missing_file():
