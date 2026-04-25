@@ -2,6 +2,7 @@
 <opml version="2.0">
 <head><title>Daily RSS summary</title></head>
 <body>
+<outline type="rss" xmlUrl="https://jedmund.com/rss" title="@jedmund" text="@jedmund" htmlUrl="https://jedmund.com/"/>
 <outline type="rss" xmlUrl="https://unsung.aresluna.org/feed.xml" title="Unsung" text="Unsung" htmlUrl="https://unsung.aresluna.org"/>
 <outline type="rss" xmlUrl="https://rafe.codes/index.xml" title="rafe.codes" text="rafe.codes" htmlUrl="https://rafe.codes/"/>
 <outline type="rss" xmlUrl="https://birchtree.me/rss/" title="Birchtree.me" text="Birchtree.me" htmlUrl="https://birchtree.me/"/>
