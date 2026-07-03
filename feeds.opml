@@ -65,7 +65,7 @@
 <outline type="rss" xmlUrl="https://vhbelvadi.com/rss" title="V.H. Belvadi" text="V.H. Belvadi" htmlUrl="https://vhbelvadi.com"/>
 <outline type="rss" xmlUrl="http://www.julian.digital/feed" title="julian.digital" text="julian.digital" htmlUrl="https://julian.digital"/>
 <outline type="rss" xmlUrl="https://gosha.net/feed.xml" title="Gosha.net" text="Gosha.net" htmlUrl="https://gosha.net/"/>
-<outline type="rss" xmlUrl="https://melanie-richards.com/feed.xml" title="Melanie Richards - PM" text="Melanie Richards - PM" htmlUrl="https://melanie-richards.com"/>
+<outline type="rss" xmlUrl="https://melanie-richards.com/feed.xml" title="Melanie Richards, PM" text="Melanie Richards, PM" htmlUrl="https://melanie-richards.com"/>
 <outline type="rss" xmlUrl="https://kyleio.com/rss.xml?2025-08-00" title="Kyle Johnston's creative journal" text="Kyle Johnston's creative journal" htmlUrl="https://kyleio.com/"/>
 <outline type="rss" xmlUrl="https://kyleio.com/links.xml?2025-08-05" title="Kyle Johnston - Links" text="Kyle Johnston - Links" htmlUrl="https://kyleio.com/p/links/"/>
 <outline type="rss" xmlUrl="https://www.robinsloan.com/lab.xml" title="Dragoncatcher the blog" text="Dragoncatcher the blog" htmlUrl="https://www.robinsloan.com"/>
@@ -85,15 +85,16 @@
 <outline type="rss" xmlUrl="https://newsletter.baselinedesign.io/feed/" title="Baseline Design" text="Baseline Design" htmlUrl="https://newsletter.baselinedesign.com/"/>
 <outline type="rss" xmlUrl="https://newsletter.brxnd.ai/feed/" title="BRXND Dispatch" text="BRXND Dispatch" htmlUrl="https://newsletter.brxnd.ai"/>
 <outline type="rss" xmlUrl="https://nazhamid.com/feed.xml" title="Naz Hamid" text="Naz Hamid" htmlUrl="https://nazhamid.com"/>
+<outline type="rss" xmlUrl="https://nazhamid.com/links.xml" title="Naz Hamid: Links" text="Naz Hamid: Links" htmlUrl="https://nazhamid.com/links/"/>
 <outline type="rss" xmlUrl="https://arun.is/rss.xml" title="arun.is" text="arun.is" htmlUrl="https://arun.is/"/>
 <outline type="rss" xmlUrl="http://interconnected.org/home/;atom" title="Interconnected" text="Interconnected" htmlUrl="https://interconnected.org/home"/>
-<outline type="rss" xmlUrl="https://nazhamid.com/links.xml" title="Naz Hamid • Links" text="Naz Hamid • Links" htmlUrl="https://nazhamid.com/links/"/>
-<outline type="rss" xmlUrl="https://chrisglass.com/feed/" title="Chris Glass' feed" text="Chris Glass' feed" htmlUrl="https://chrisglass.com"/>
+<outline type="rss" xmlUrl="https://chrisglass.com/feed/" title="Chris Glass: journal" text="Chris Glass: journal" htmlUrl="https://chrisglass.com/photos/"/>
+<outline type="rss" xmlUrl="https://chrisglass.com/links/feed/" title="Chris Glass: bookmarks" text="Chris Glass: bookmarks" htmlUrl="https://chrisglass.com/links/"/>
+<outline type="rss" xmlUrl="https://rss.beehiiv.com/feeds/cJZUcTGtvE.xml" title="Chris Glass: digest" text="Chris Glass: digest" htmlUrl="https://chrisglass.com/digest/"/>
 <outline type="rss" xmlUrl="https://marcel.io/feed" title="marcel.io" text="marcel.io" htmlUrl="https://marcel.io"/>
 <outline type="rss" xmlUrl="https://cassidoo.co/rss.xml" title="Cassidy Williams" text="Cassidy Williams" htmlUrl="https://cassidoo.co/"/>
 <outline type="rss" xmlUrl="https://a.wholelottanothing.org/feed/" title="A Whole Lotta Nothing" text="A Whole Lotta Nothing" htmlUrl="https://a.wholelottanothing.org/"/>
 <outline type="rss" xmlUrl="https://blog.fsck.com/feed/feed.xml" title="Massively Parallel Procrastination" text="Massively Parallel Procrastination" htmlUrl="https://blog.fsck.com"/>
-<outline type="rss" xmlUrl="https://chrisglass.com/links/feed/" title="Chris Glass' bookmarks" text="Chris Glass' bookmarks" htmlUrl="https://chrisglass.com"/>
 <outline type="rss" xmlUrl="https://scottboms.com/rss" title="Scott Boms: Notebook Dispatches" text="Scott Boms: Notebook Dispatches" htmlUrl="https://scottboms.com"/>
 <outline type="rss" xmlUrl="http://feeds.feedburner.com/yewknee" title="yewknee" text="yewknee" htmlUrl="http://yewknee.com/"/>
 <outline type="rss" xmlUrl="https://staticmade.com/feed/" title="Static Made by Jeffrey Inscho" text="Static Made by Jeffrey Inscho" htmlUrl="https://staticmade.com/"/>
