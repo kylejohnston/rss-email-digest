@@ -27,7 +27,6 @@
 <outline type="rss" xmlUrl="https://chriscoyier.net/feed/" text="Chris Coyier" htmlUrl="https://chriscoyier.net"/>
 <outline type="rss" xmlUrl="https://tomcritchlow.com/feed.xml" text="tomcritchlow.com" htmlUrl="https://tomcritchlow.com"/>
 <outline type="rss" xmlUrl="https://css-irl.info/rss.xml" text="CSS In Real Life" htmlUrl="https://css-irl.info"/>
-<outline type="rss" xmlUrl="https://cultureby.com/feed" text="Culture By Commotion – Grant McCracken" htmlUrl="https://cultureby.com"/>
 <outline type="rss" xmlUrl="https://daringfireball.net/index.xml" text="Daring Fireball" htmlUrl="https://daringfireball.net/"/>
 <outline type="rss" xmlUrl="https://brendandawes.com/blog/feed" text="Brendan Dawes" htmlUrl="http://brendandawes.com/blog"/>
 <outline type="rss" xmlUrl="https://everythingchanges.us/feed.xml" text="everything changes" htmlUrl="https://everythingchanges.us/"/>
@@ -49,6 +48,7 @@
 <outline type="rss" xmlUrl="https://newsletter.danhon.com/rss/" text="Dan Hon" htmlUrl="https://newsletter.danhon.com"/>
 <outline type="rss" xmlUrl="https://ia.net/feed" text="iA" htmlUrl="https://ia.net"/>
 <outline type="rss" xmlUrl="https://piccalil.li/the-index/feed.xml" text="The Index by Piccalilli" htmlUrl="https://piccalil.li/the-index/"/>
+<outline type="rss" xmlUrl="https://inscho.org/feed.xml" text="Jeffrey Inscho" htmlUrl="https://inscho.org/"/>
 <outline type="rss" xmlUrl="https://interconnected.org/home/;atom" text="Interconnected" htmlUrl="https://interconnected.org/home"/>
 <outline type="rss" xmlUrl="https://jedmund.com/rss" text="@jedmund" htmlUrl="https://jedmund.com/"/>
 <outline type="rss" xmlUrl="https://kyleio.com/rss.xml?2025-08-00" text="Kyle Johnston's creative journal" htmlUrl="https://kyleio.com/"/>
@@ -87,7 +87,6 @@
 <outline type="rss" xmlUrl="https://dansinker.com/feed.xml" text="Dan Sinker's Blog" htmlUrl="https://dansinker.com"/>
 <outline type="rss" xmlUrl="https://www.robinsloan.com/lab.xml" text="Dragoncatcher the blog" htmlUrl="https://www.robinsloan.com"/>
 <outline type="rss" xmlUrl="https://paulstamatiou.com/posts.xml" text="Paul Stamatiou" htmlUrl="https://paulstamatiou.com"/>
-<outline type="rss" xmlUrl="https://staticmade.com/feed/" text="Static Made by Jeffrey Inscho" htmlUrl="https://staticmade.com/"/>
 <outline type="rss" xmlUrl="https://matthewstrom.com/feed.xml" text="Matthew Ström" htmlUrl="https://matthewstrom.com"/>
 <outline type="rss" xmlUrl="https://feeds2.feedburner.com/Swissmiss" text="swissmiss" htmlUrl="https://www.swiss-miss.com"/>
 <outline type="rss" xmlUrl="https://unsung.aresluna.org/feed.xml" text="Unsung" htmlUrl="https://unsung.aresluna.org"/>
